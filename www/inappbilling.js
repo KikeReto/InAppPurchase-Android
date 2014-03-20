@@ -13,14 +13,17 @@ var InAppBilling = function () {
 InAppBilling.prototype.init = function (success, fail, options, skus) {
 	options || (options = {});
 
+	if(! options.key) log('Error, missing key parameter');
 	this.options = {
-		showLog: options.showLog || true
+		showLog: options.showLog || true,
+		key: options.key
 	};
-	
+
 	if (this.options.showLog) {
 		log('setup ok');
+		log('KEY:: '+this.options.key);
 	}
-	
+
 	var hasSKUs = false;
 	//Optional Load SKUs to Inventory.
 	if(typeof skus !== "undefined"){
@@ -38,12 +41,12 @@ InAppBilling.prototype.init = function (success, fail, options, skus) {
 			hasSKUs = true;
     	}
 	}
-	
+
 	if(hasSKUs){
-		return cordova.exec(success, fail, "InAppBillingPlugin", "init", [skus]);
+		return cordova.exec(success, fail, "InAppBillingPlugin", "init", [this.options.key,skus]);
     }else {
         //No SKUs
-		return cordova.exec(success, fail, "InAppBillingPlugin", "init", []);
+		return cordova.exec(success, fail, "InAppBillingPlugin", "init", [this.options.key]);
     }
 };
 InAppBilling.prototype.getPurchases = function (success, fail) {
@@ -80,7 +83,7 @@ InAppBilling.prototype.getProductDetails = function (success, fail, skus) {
 	if (this.options.showLog) {
 		log('getProductDetails called!');
 	}
-	
+
 	if (typeof skus === "string") {
         skus = [skus];
     }
