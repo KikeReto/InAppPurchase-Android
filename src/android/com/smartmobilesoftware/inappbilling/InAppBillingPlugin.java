@@ -139,7 +139,6 @@ public class InAppBillingPlugin extends CordovaPlugin {
         Log.d(TAG, "init start");
 		// Some sanity checks to see if the developer (that's you!) really followed the
         // instructions to run this plugin
-	 	Log.d(TAG,"HOLAAAA" + base64EncodedPublicKey);
         if (base64EncodedPublicKey.contains("CONSTRUCT_YOUR"))
 	 		throw new RuntimeException("Please put your app's public key in InAppBillingPlugin.java. See ReadMe.");
 
@@ -237,7 +236,10 @@ public class InAppBillingPlugin extends CordovaPlugin {
         // Convert the java list to json
         JSONArray jsonPurchaseList = new JSONArray();
         for (Purchase p : purchaseList) {
-	        jsonPurchaseList.put(new JSONObject(p.getOriginalJson()));
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("payload", p.getOriginalJson());
+            jsonObject.put("signature", p.getSignature());
+	        jsonPurchaseList.put(jsonObject);
         }
 
         return jsonPurchaseList;
